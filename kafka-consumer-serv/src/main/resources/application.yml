@@ -1,5 +1,22 @@
 server:
   port: 8081
+#hostname:
+#  localhost
 spring:
   application:
     name: kafka-consumer-serv
+  kafka:
+    bootstrap-servers: localhost:9092 # Kafka服务器地址
+
+    consumer:
+      group-id: my-group # 消费者组ID
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      auto-offset-reset: earliest # 从最早的记录开始消费
+    listener:
+      concurrent-consumers: 2 # 并发消费者数量
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/

@@ -6,56 +6,7 @@
     <title>Kafka Message Consumer</title>
     <script src="/js/vue.js"></script>
     <script src="/js/axios.js"></script>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f5f5f5;
-            font-family: Arial, sans-serif;
-        }
 
-        #app {
-            text-align: center;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            padding: 20px;
-            width: 400px;
-        }
-
-        #kafka-consumer h2 {
-            margin-bottom: 20px;
-        }
-
-        #kafka-consumer table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        #kafka-consumer table th, #kafka-consumer table td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
-        #kafka-consumer table tr:nth-child(even) {
-            background-color: #f2f2f2;
-        }
-
-        #kafka-consumer table th {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        #kafka-consumer button {
-            margin-top: 10px;
-        }
-    </style>
 </head>
 
 <body>
@@ -69,11 +20,20 @@
             <option value="topic-B">topic-B</option>
         </select>
         <button @click="fetchMessages">Show Messages</button>
-        <ul v-if="messages.length > 0">
-            <li v-for="(message, index) in messages" :key="index">
-                {{ message.content }} - Received at: {{ message.receivedTime }}
-            </li>
-        </ul>
+        <table v-if="messages.length > 0">
+            <thead>
+            <tr>
+                <th>Content</th>
+                <th>Received Time</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(message, index) in messages" :key="index">
+                <td>{{ message.content }}</td>
+                <td>{{ message.receivedTime }}</td>
+            </tr>
+            </tbody>
+        </table>
         <p v-else>No messages received yet.</p>
     </div>
 </div>
@@ -104,18 +64,87 @@
                     // You might want to display an error message to the user here
                 }
             }
-
         },
-        created() {
-            // Fetch messages on component mount if needed
-            // this.fetchMessages();
-        }
 
     });
 
 </script>
 
 </body>
+<style>
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f5f5f5;
+        font-family: Arial, sans-serif;
+    }
 
+    #app {
+        text-align: center;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        padding: 20px;
+        width: 400px;
+    }
+
+    #kafka-consumer h2 {
+        margin-bottom: 20px;
+    }
+
+    #kafka-consumer table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    #kafka-consumer table th, #kafka-consumer table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    #kafka-consumer table tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    #kafka-consumer table th {
+        background-color: #127bb5;
+        color: white;
+    }
+
+    #kafka-consumer button {
+        margin-top: 10px;
+    }
+    /* 样式化下拉列表 */
+    #topic-select {
+        width: 100%;
+        padding: 5px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        background-color: #fff;
+    }
+
+    /* 样式化按钮 */
+    button {
+        margin-top: 10px;
+        padding: 10px 20px;
+        font-size: 16px;
+        color: #fff;
+        background-color: #547dba;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #4b70a9; /* 稍暗的绿色，鼠标悬停效果 */
+    }
+</style>
 
 </html>

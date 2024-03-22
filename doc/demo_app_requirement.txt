@@ -1,0 +1,21 @@
+Eureka service
+- each service will register with Eureka
+
+Kafka service
+- setup 2 topics, Topic A and Topic B
+
+Application sender
+Have an UI for user to do the followings,
+- select a topic to send to
+- an text area to input a message
+- a send button
+
+Application receiver (there are 2 instances of this, one for each topic)
+The receiver is configured to read 1 of the topic only
+Have an UI to show last 10 received message and receive time
+
+
+
+
+
+

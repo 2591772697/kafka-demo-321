@@ -3,3 +3,5 @@ server:
 spring:
   application:
     name: kafka-producer-serv
+  kafka:
+    bootstrap-servers: localhost:9092

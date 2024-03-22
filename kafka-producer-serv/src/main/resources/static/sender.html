@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kafka Message Sender</title>
+    <!-- 引入Vue.js，这里使用CDN链接，您可以根据需要替换为本地文件 -->
+
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="/js/vue.js"></script>
+</head>
+<body>
+
+<div id="app">
+    <h1>Kafka Message Sender</h1>
+    <form @submit.prevent="sendMessage">
+        <div>
+            <label for="topic">Select Topic:</label>
+            <select v-model="selectedTopic" id="topic">
+                <option disabled value="">Please select a topic</option>
+                <!-- 假设的Kafka主题列表，您可能需要根据实际情况动态生成这些选项 -->
+                <option value="topic-A">topic-A</option>
+                <option value="topic-B">topic-B</option>
+
+
+            </select>
+        </div>
+        <div>
+            <label for="message">Enter Message:</label>
+            <textarea v-model="message" id="message" rows="4" cols="50"></textarea>
+        </div>
+        <button type="submit">Send Message</button>
+        <p v-if="responseMessage" class="response">{{ responseMessage }}</p>
+    </form>
+</div>
+
+<!-- Vue实例初始化 -->
+<script type="text/javascript">
+    new Vue({
+        el: "#app",
+        data() {
+            return {
+                selectedTopic: '',
+                message: '',
+                responseMessage: ''
+
+            }
+
+        },
+        methods:{
+            sendMessage() {
+                // 假设后端API的地址是 '/sender/send'，因为是前后端不分离，所以不需要完整的URL
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', '/sender/send', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        this.responseMessage = xhr.responseText; // 更新Vue实例的responseMessage
+                    }
+                }.bind(this);
+                xhr.send(`topic=${encodeURIComponent(this.selectedTopic)}&message=${encodeURIComponent(this.message)}`);
+            }
+        },
+
+    });
+
+</script>
+
+</body>
+<style>
+    body, html {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #f2f2f2; /* 背景色 */
+        font-family: Arial, sans-serif; /* 字体 */
+    }
+
+    #app {
+        text-align: center; /* 文本居中 */
+        background-color: #fff; /* 背景色 */
+        padding: 20px; /* 内边距 */
+        border-radius: 5px; /* 圆角 */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 阴影效果 */
+    }
+
+    #app h1 {
+        color: #333; /* 标题颜色 */
+    }
+
+    #app form {
+        margin-top: 20px; /* 表单顶部外边距 */
+    }
+
+    #app select,
+    #app textarea,
+    #app button {
+        width: 100%; /* 宽度100% */
+        max-width: 300px; /* 最大宽度限制 */
+        padding: 10px; /* 内边距 */
+        border: 1px solid #ccc; /* 边框 */
+        border-radius: 5px; /* 圆角 */
+        font-size: 16px; /* 字体大小 */
+    }
+
+    #app textarea {
+        resize: vertical; /* 文本域垂直可调整大小 */
+    }
+
+    #app button {
+        background-color: #4CAF50; /* 发送按钮背景色 */
+        color: white; /* 发送按钮文字颜色 */
+        cursor: pointer; /* 鼠标悬停样式 */
+        margin-top: 10px; /* 顶部外边距 */
+    }
+
+    #app button:hover {
+        background-color: #45a049; /* 鼠标悬停时发送按钮背景色 */
+    }
+
+    .response {
+        margin-top: 15px; /* 响应消息顶部外边距 */
+        color: #666; /* 响应消息颜色 */
+    }
+
+    /* 如果需要响应消息为绿色，可以添加以下样式 */
+    .response.success {
+        color: green;
+    }
+
+    /* 如果需要响应消息为红色，可以添加以下样式 */
+    .response.error {
+        color: red;
+    }
+</style>
+
+</html>

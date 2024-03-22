@@ -6,7 +6,7 @@
     <title>Kafka Message Sender</title>
     <!-- 引入Vue.js，这里使用CDN链接，您可以根据需要替换为本地文件 -->
 
-    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<!--    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>-->
     <script src="/js/vue.js"></script>
 </head>
 <body>
@@ -49,13 +49,17 @@
         },
         methods:{
             sendMessage() {
-                // 假设后端API的地址是 '/sender/send'，因为是前后端不分离，所以不需要完整的URL
                 const xhr = new XMLHttpRequest();
                 xhr.open('POST', '/sender/send', true);
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                 xhr.onreadystatechange = function () {
-                    if (xhr.readyState === 4 && xhr.status === 200) {
-                        this.responseMessage = xhr.responseText; // 更新Vue实例的responseMessage
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200) {
+                            this.responseMessage = xhr.responseText; // 更新Vue实例的responseMessage
+                            alert('Sent success'); // 发送成功后弹出提示
+                        } else {
+                            this.responseMessage = 'Error sending message: ' + xhr.statusText; // 更新错误信息
+                        }
                     }
                 }.bind(this);
                 xhr.send(`topic=${encodeURIComponent(this.selectedTopic)}&message=${encodeURIComponent(this.message)}`);

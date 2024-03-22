@@ -14,7 +14,7 @@ public class KafkaConsumer {
  
     @KafkaListener(topics = "${kafka.topic.name}")
     public void listen(ConsumerRecord<?, ?> record) {
-        log.info("topic={}, offset={}, message={}", record.topic(), record.offset(), record.value());
+        log.info("consumption arrived :topic={}, offset={}, message={}", record.topic(), record.offset(), record.value());
     }
  
  

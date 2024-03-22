@@ -30,11 +30,11 @@ public class KafkaProducer implements CommandLineRunner {
      */
     public void send(String string) {
         ListenableFuture future = kafkaTemplate.send(topic, JSONObject.toJSONString(string));
-        //future.addCallback(o -> log.info("kafka message was sent successfully：" + jsonString), throwable -> log.error("kafka消息发送失败：" + jsonString));
+        future.addCallback(o -> log.info("kafka message was sent successfully：" + JSONObject.toJSONString(string)), throwable -> log.error("kafka消息发送失败：" + JSONObject.toJSONString(string)));
     }
 
     /**
-     * After the container startup is complete, the test data is produced
+     * 容器启动完成后，将生成测试数据
      */
     @Override
     public void run(String... args) {

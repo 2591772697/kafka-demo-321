@@ -13,16 +13,13 @@
 
 <div id="app">
     <h1>Kafka Message Sender</h1>
-    <form @submit.prevent="sendMessage">
+    <form @submit.prevent="handleSubmit">
         <div>
             <label for="topic">Select Topic:</label>
             <select v-model="selectedTopic" id="topic">
                 <option disabled value="">Please select a topic</option>
-                <!-- 假设的Kafka主题列表，您可能需要根据实际情况动态生成这些选项 -->
                 <option value="topic-A">topic-A</option>
                 <option value="topic-B">topic-B</option>
-
-
             </select>
         </div>
         <div>
@@ -30,11 +27,11 @@
             <textarea v-model="message" id="message" rows="4" cols="50"></textarea>
         </div>
         <button type="submit">Send Message</button>
+
+        <p v-show="showSuccessMessage" class="success-message">You've just sent "{{ message }}" to {{ selectedTopic }}</p>
         <p v-if="responseMessage" class="response">{{ responseMessage }}</p>
     </form>
 </div>
-
-<!-- Vue实例初始化 -->
 <script type="text/javascript">
     new Vue({
         el: "#app",
@@ -42,28 +39,39 @@
             return {
                 selectedTopic: '',
                 message: '',
-                responseMessage: ''
+                responseMessage: '',
+                showSuccessMessage: false,
 
             }
 
         },
         methods:{
-            sendMessage() {
+            handleSubmit() {
+                if (!this.selectedTopic) {
+                    alert('Please select a topic');
+                    return; // 阻止发送请求
+                }
+
                 const xhr = new XMLHttpRequest();
                 xhr.open('POST', '/sender/send', true);
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === 4) {
                         if (xhr.status === 200) {
-                            this.responseMessage = xhr.responseText; // 更新Vue实例的responseMessage
-                            alert('Sent success'); // 发送成功后弹出提示
+                            this.responseMessage = xhr.responseText;
+                            this.showSuccessMessage = true;
+
+                            setTimeout(() => {
+                                this.showSuccessMessage = false;
+                            }, 3000);
                         } else {
-                            this.responseMessage = 'Error sending message: ' + xhr.statusText; // 更新错误信息
+                            this.responseMessage = 'Error sending message: ' + xhr.statusText;
                         }
                     }
                 }.bind(this);
+
                 xhr.send(`topic=${encodeURIComponent(this.selectedTopic)}&message=${encodeURIComponent(this.message)}`);
-            }
+            },
         },
 
     });

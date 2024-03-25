@@ -29,6 +29,7 @@ public class KafkaConsumerService {
         processMessage(topic, message, timestamp);
     }
 
+
     // 监听Topic B的消息
     @KafkaListener(topics = "topic-B", groupId = "my-group")
     public void listenTopicB(ConsumerRecord<?, ?> record) {

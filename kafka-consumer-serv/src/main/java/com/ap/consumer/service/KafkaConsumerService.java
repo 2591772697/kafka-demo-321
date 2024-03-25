@@ -38,10 +38,7 @@ public class KafkaConsumerService {
         processMessage(topic, message, timestamp);
     }
 
-    // 辅助方法：将long类型时间戳转换为LocalDateTime
-    private LocalDateTime convertTimestamp(long timestamp) {
-        return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.systemDefault());
-    }
+
 
     private void processMessage(String topic, String message, long timestamp) {
         LocalDateTime dateTime = convertTimestamp(timestamp);
@@ -56,6 +53,11 @@ public class KafkaConsumerService {
     // 获取特定主题的最后10条消息
     public List<Message> getLastMessages(String topic) {
         return messages.getOrDefault(topic, new LinkedList<>());
+    }
+
+    // 辅助方法：将long类型时间戳转换为LocalDateTime
+    private LocalDateTime convertTimestamp(long timestamp) {
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.systemDefault());
     }
 
 

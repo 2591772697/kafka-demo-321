@@ -1,4 +1,4 @@
-# p2-w4-d6-uniform-rent-Service
+# kafka-demo-321
 
 #### 介绍
 技术栈：Eureka、Kafka
@@ -29,9 +29,9 @@
 
 #### 特技
 
-1.  
-2.  
-3.  
-4.  
-5.  
-6.  
+1.  xxxx
+2.  xxxx
+3.  xxxx
+4.  xxxx
+5.  xxxx
+6.  xxxx

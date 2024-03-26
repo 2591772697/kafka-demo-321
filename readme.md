@@ -10,10 +10,10 @@
 
 #### 安装教程
 
-1.  进入根目录，打开命令行，执行
-    docker-compose up命令，等待容器安装完成
+1.  进入根目录，打开命令行，执行 docker-compose up -d命令，等待容器安装完成
 2.  启动容器kafka和kafka-ui，注意这里的GUI端口是http://localhost:9090/
-3.  xxxx
+3.  如果kafka-demo-321目录下的docker-compose.yml运行不成功，就去kafka-demo-321/src/下去执行docker-compose up -d命令
+4. 
 
 #### 使用说明
 

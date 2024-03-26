@@ -25,6 +25,7 @@ git config --global https.proxy http://127.0.0.1:7890
 
 第一种是jdk未指定报错：成因：
 idea自带的jdk在默认启动时不指定会有概率出问题：解决：去给模块指定本地磁盘的jdk
+![img_10.png](img_10.png)
 
 ![image-20240326104239641](C:\Users\123\AppData\Roaming\Typora\typora-user-images\image-20240326104239641.png)
 

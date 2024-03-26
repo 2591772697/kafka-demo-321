@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -42,12 +43,12 @@ public class KafkaConsumerService {
 
 
     private void processMessage(String topic, String message, long timestamp) {
-        LocalDateTime dateTime = convertTimestamp(timestamp);
-        List<Message> topicMessages = messages.computeIfAbsent(topic, k -> new LinkedList<>());
-        topicMessages.add(new Message(message, dateTime));
-        // 保持只显示最后10条消息
-        while (topicMessages.size() > 10) {
-            topicMessages.remove(0);
+        String formattedTimestamp = convertTimestampToString(timestamp);
+        List<Message> messageList = messages.computeIfAbsent(topic, k -> new LinkedList<>());
+        messageList.add(new Message(message, formattedTimestamp));
+
+        while (messageList.size() > 10) {
+            messageList.remove(0);
         }
     }
 
@@ -57,8 +58,10 @@ public class KafkaConsumerService {
     }
 
     // 辅助方法：将long类型时间戳转换为LocalDateTime
-    private LocalDateTime convertTimestamp(long timestamp) {
-        return LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.systemDefault());
+    private String convertTimestampToString(long timestamp) {
+        LocalDateTime dateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(timestamp), ZoneId.systemDefault());
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss-yyyy/MM/dd");
+        return dateTime.format(formatter);
     }
 
 

@@ -21,7 +21,12 @@ public class KafkaConsumerController {
     // 获取特定主题的最后10条消息  
     @GetMapping("/getLastMessages/{topic}")
     public ResponseEntity<List<Message>> getLastMessages(@PathVariable String topic) {
+//        List<Message> messages = kafkaConsumerService.getLastMessages(topic);
+
         List<Message> messages = kafkaConsumerService.getLastMessages(topic);
+//        for (Message message : messages) {
+//            System.out.println("message.getFormattedTimestamp() = " + message.getFormattedTimestamp());
+//        }
         return ResponseEntity.ok(messages);
     }
 }

@@ -1,7 +1,7 @@
 server:
   port: 8081
-#hostname:
-#  localhost
+# hostname:
+# localhost
 spring:
   application:
     name: kafka-consumer-serv

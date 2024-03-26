@@ -37,3 +37,37 @@ idea自带的jdk在默认启动时不指定会有概率出问题：解决：去�
 第二种是：yaml文件格式编码未指定导致启动前编码失败，解决：把编码全改为UTF-8，再clear，build，run就搞定了
 Application run failed
      org.yaml.snakeyaml.error.YAMLException: java.nio.charset.MalformedInputException: Input length = 2
+
+或者：![img.png](img.png)
+13:24:45.039 [main] ERROR org.springframework.boot.SpringApplication 
+- Application run failed
+org.yaml.snakeyaml.error.YAMLException: java.nio.charset.MalformedInputException: Input length = 1
+
+解决：![img_1.png](img_1.png)
+
+
+4.lombok编译文件不生效，启动报错：17:9
+java: 找不到符号
+符号:   变量 log
+位置: 类 com.ap.demo.KafkaConsumer
+或者是找不到getter等，都是lombok没找到合适的版本
+![img_2.png](img_2.png)
+
+原因：lombok版本太低了
+
+解决：在pom里加版本
+![img_3.png](img_3.png)
+![img_4.png](img_4.png)
+![img_6.png](img_6.png)
+完成：![img_5.png](img_5.png)
+
+
+5.单个示例模块启动报错：
+说明：这是一个示例模块，不需要注册为一个微服务，但是父项目引入了依赖
+![img_7.png](img_7.png)
+原因： 没有依赖排除eureka
+
+单个示例模块它只需要演示发和收消息，在启动之前要启动kafka的容器
+![img_8.png](img_8.png)
+查看消息：![img_9.png](img_9.png)
+

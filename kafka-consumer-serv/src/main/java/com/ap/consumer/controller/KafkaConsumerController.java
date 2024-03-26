@@ -23,10 +23,10 @@ public class KafkaConsumerController {
     public ResponseEntity<List<Message>> getLastMessages(@PathVariable String topic) {
 //        List<Message> messages = kafkaConsumerService.getLastMessages(topic);
 
-        List<Message> messages = kafkaConsumerService.getLastMessages(topic);
+        List<Message> messageList = kafkaConsumerService.getLastMessages(topic);
 //        for (Message message : messages) {
 //            System.out.println("message.getFormattedTimestamp() = " + message.getFormattedTimestamp());
 //        }
-        return ResponseEntity.ok(messages);
+        return ResponseEntity.ok(messageList);
     }
 }

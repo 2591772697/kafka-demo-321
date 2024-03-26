@@ -40,8 +40,6 @@ public class KafkaConsumerService {
         processMessage(topic, message, timestamp);
     }
 
-
-
     private void processMessage(String topic, String message, long timestamp) {
         String formattedTimestamp = convertTimestampToString(timestamp);
         List<Message> messageList = messages.computeIfAbsent(topic, k -> new LinkedList<>());
@@ -49,6 +47,7 @@ public class KafkaConsumerService {
 
         while (messageList.size() > 10) {
             messageList.remove(0);
+
         }
     }
 

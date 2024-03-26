@@ -2,15 +2,6 @@ version: "3.5"
 
 services:
 
-  zookeeper:
-    container_name: zookeeper
-    image: "docker.io/bitnami/zookeeper:3"
-    ports:
-      - "2181:2181"
-    volumes:
-      - "zookeeper_data:/bitnami"
-    environment:
-      - ALLOW_ANONYMOUS_LOGIN=yes
 
   kafka:
     container_name: kafka

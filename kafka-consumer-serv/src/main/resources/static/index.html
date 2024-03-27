@@ -52,6 +52,7 @@
         methods: {
             async fetchMessages() {
                 try {
+                    debugger
                     const response = await axios.get(`/consumer/v2/getLastMessages/${this.selectedTopic}`);
                     if (response.data && Array.isArray(response.data)) {
                         this.messages = response.data.map(message => ({

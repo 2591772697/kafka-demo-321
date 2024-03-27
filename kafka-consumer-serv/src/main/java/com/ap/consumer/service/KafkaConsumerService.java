@@ -46,10 +46,10 @@ public class KafkaConsumerService {
         messageList.add(new Message(message, formattedTimestamp, timestamp));
 
 //        这里取消注释就可以把超出的消息删除
-        while (messageList.size() > 10) {
-            messageList.remove(0);
-
-        }
+//        while (messageList.size() > 10) {
+//            messageList.remove(0);
+//
+//        }
 //        messageList.stream().
     }
 

@@ -30,7 +30,8 @@ public class KafkaProducer implements CommandLineRunner {
      */
     public void send(String string) {
         ListenableFuture future = kafkaTemplate.send(topic, JSONObject.toJSONString(string));
-        future.addCallback(o -> log.info("kafka message was sent successfully：" + JSONObject.toJSONString(string)), throwable -> log.error("kafka消息发送失败：" + JSONObject.toJSONString(string)));
+        future.addCallback(o -> log.info("kafka message was sent successfully：" + JSONObject.toJSONString(string))
+                , throwable -> log.error("kafka消息发送失败：" + JSONObject.toJSONString(string)));
     }
 
     /**
@@ -38,8 +39,9 @@ public class KafkaProducer implements CommandLineRunner {
      */
     @Override
     public void run(String... args) {
-        for (int i = 0; i < 10; i++) {
-            send("hello world" + i);
+        for (int i = 1; i < 11; i++) {
+            send("hello world! 你好啊，这是第" + i+"条消息");
         }
     }
+
 }

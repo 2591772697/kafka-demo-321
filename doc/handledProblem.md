@@ -72,3 +72,4 @@ java: 找不到符号
 ![img_8.png](img_8.png)
 查看消息：![img_9.png](img_9.png)
 
+6.经常过一段时间就报错jdk未指定或者yaml编码导致启动失败的错，怀疑是idea的bug，决定升级idea的版本

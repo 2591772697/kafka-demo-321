@@ -29,9 +29,14 @@ public class KafkaProducer implements CommandLineRunner {
      * @param string
      */
     public void send(String string) {
-        ListenableFuture future = kafkaTemplate.send(topic, JSONObject.toJSONString(string));
-        future.addCallback(o -> log.info("kafka message was sent successfully：" + JSONObject.toJSONString(string))
+        ListenableFuture future0 = kafkaTemplate.send(topic, JSONObject.toJSONString(string));
+        future0.addCallback(o -> log.info("kafka message was sent successfully：" + JSONObject.toJSONString(string))
                 , throwable -> log.error("kafka消息发送失败：" + JSONObject.toJSONString(string)));
+//        用print直接打印
+//        ListenableFuture future = kafkaTemplate.send(topic, string);
+//        future.addCallback(o -> System.out.println("kafka message was sent successfully：" + JSONObject.toJSONString(string))
+//                , throwable -> System.out.println("kafka消息发送失败：" + JSONObject.toJSONString(string)));
+
     }
 
     /**
@@ -42,6 +47,7 @@ public class KafkaProducer implements CommandLineRunner {
         for (int i = 1; i < 11; i++) {
             send("hello world! 你好啊，这是第" + i+"条消息");
         }
+
     }
 
 }

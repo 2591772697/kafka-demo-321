@@ -1,0 +1,4 @@
+需要考虑的情况：
+ 消费者down掉
+ kafka如果down
+ kafka down掉时，发的消息怎么运作的？

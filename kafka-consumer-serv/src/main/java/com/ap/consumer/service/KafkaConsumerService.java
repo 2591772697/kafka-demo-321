@@ -1,6 +1,7 @@
 package com.ap.consumer.service;
 
 import com.ap.consumer.pojo.Message;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,9 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+
 @Service
+@Slf4j
 public class KafkaConsumerService {
 
     private final ConcurrentHashMap<String, List<Message>> messages = new ConcurrentHashMap<>();
@@ -27,8 +30,10 @@ public class KafkaConsumerService {
         String topic = record.topic();
         String message = (String) record.value();
         long timestamp = record.timestamp(); // 假设record.timestamp()提供了正确的时间戳
+        log.info("Received message from topic {} : {}", topic, message);
         processMessage(topic, message, timestamp);
     }
+
 
 
     // 监听Topic B的消息
@@ -37,8 +42,11 @@ public class KafkaConsumerService {
         String topic = record.topic();
         String message = (String) record.value();
         long timestamp = record.timestamp(); // 假设record.timestamp()提供了正确的时间戳
+        log.info("Received message from topic {} : {}", topic, message);
         processMessage(topic, message, timestamp);
+
     }
+
 
     private void processMessage(String topic, String message, long timestamp) {
         String formattedTimestamp = convertTimestampToString(timestamp);
@@ -48,7 +56,6 @@ public class KafkaConsumerService {
 //        这里取消注释就可以把超出的消息删除
 //        while (messageList.size() > 10) {
 //            messageList.remove(0);
-//
 //        }
 //        messageList.stream().
     }

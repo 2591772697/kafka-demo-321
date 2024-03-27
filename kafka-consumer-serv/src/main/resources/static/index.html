@@ -23,14 +23,14 @@
         <table v-if="messages.length > 0">
             <thead>
             <tr>
-                <th>Content</th>
-                <th>Received Time</th>
+                <th class="content-column">Content</th>
+                <th class="timestamp-column">Received Time</th>
             </tr>
             </thead>
             <tbody>
             <tr v-for="(message, index) in messages" :key="index">
-                <td>{{ message.content }}</td>
-                <td>{{ message.formattedTimestamp }}</td> <!-- 直接显示后端返回的格式化时间 -->
+                <td class="content-column">{{ truncateContent(message.content) }}</td>
+                <td class="timestamp-column">{{ message.formattedTimestamp }}</td>
             </tr>
             </tbody>
         </table>
@@ -52,7 +52,7 @@
         methods: {
             async fetchMessages() {
                 try {
-                    debugger
+                    // debugger
                     const response = await axios.get(`/consumer/v2/getLastMessages/${this.selectedTopic}`);
                     if (response.data && Array.isArray(response.data)) {
                         this.messages = response.data.map(message => ({
@@ -63,7 +63,13 @@
                 } catch (error) {
                     console.error('Error fetching messages:', error);
                 }
-            }
+            },
+            truncateContent(content) {
+                if (content && content.length > 22) {
+                    return content.substring(0, 22) + '...';
+                }
+                return content;
+            },
         },
 
     });
@@ -78,73 +84,170 @@
         align-items: center;
         height: 100vh;
         margin: 0;
-        background-color: #f5f5f5;
+        padding: 0;
         font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
     }
 
-    #app {
-        text-align: center;
+    #kafka-consumer {
+        width: 90%; /* 增大卡片宽度 */
+        max-width: 1400px; /* 设置卡片最大宽度 */
+        padding: 40px; /* 增大内边距 */
+        box-sizing: border-box;
+        border: 5px solid #192a56;
+        border-radius: 15px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
         background-color: #fff;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-        overflow: hidden;
-        padding: 20px;
-        width: 400px;
     }
 
     #kafka-consumer h2 {
-        margin-bottom: 20px;
+        color: #192a56;
+        margin-top: 0;
+        text-align: center;
+    }
+
+    #kafka-consumer label,
+    #kafka-consumer select,
+    #kafka-consumer button {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 10px;
+    }
+
+    #kafka-consumer button {
+        background-color: #192a56;
+        color: #fff;
+        border: none;
+        padding: 15px 30px; /* 增大按钮尺寸 */
+        border-radius: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    #kafka-consumer button:hover {
+        background-color: #111d3e;
     }
 
     #kafka-consumer table {
         width: 100%;
         border-collapse: collapse;
-        margin-top: 20px;
+        margin-top: 30px;
     }
 
-    #kafka-consumer table th, #kafka-consumer table td {
-        border: 1px solid #ddd;
-        padding: 8px;
+    #kafka-consumer th,
+    #kafka-consumer td {
+        padding: 15px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    #kafka-consumer th {
+        background-color: #f0f0f0;
         text-align: left;
+        white-space: nowrap; /* 防止表头文本换行 */
     }
 
-    #kafka-consumer table tr:nth-child(even) {
-        background-color: #f2f2f2;
+    #kafka-consumer .content-column {
+        width: 55%; /* 调整内容列宽度 */
     }
 
-    #kafka-consumer table th {
-        background-color: #127bb5;
-        color: white;
+    #kafka-consumer .timestamp-column {
+        width: 45%; /* 调整时间戳列宽度 */
     }
 
-    #kafka-consumer button {
-        margin-top: 10px;
-    }
-    /* 样式化下拉列表 */
-    #topic-select {
-        width: 100%;
-        padding: 5px;
-        font-size: 16px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        background-color: #fff;
-    }
-
-    /* 样式化按钮 */
-    button {
-        margin-top: 10px;
-        padding: 10px 20px;
-        font-size: 16px;
-        color: #fff;
-        background-color: #547dba;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
+    /* 响应式布局 */
+    @media (max-width: 992px) {
+        #kafka-consumer {
+            width: 98%;
+        }
+        #kafka-consumer .content-column {
+            width: 50%;
+        }
+        #kafka-consumer .timestamp-column {
+            width: 50%;
+        }
     }
 
-    button:hover {
-        background-color: #4b70a9; /* 稍暗的绿色，鼠标悬停效果 */
+    @media (max-width: 768px) {
+        #kafka-consumer {
+            width: 95%;
+        }
     }
 </style>
+
+<!--<style>-->
+<!--    body {-->
+<!--        display: flex;-->
+<!--        justify-content: center;-->
+<!--        align-items: center;-->
+<!--        height: 100vh;-->
+<!--        margin: 0;-->
+<!--        background-color: #f5f5f5;-->
+<!--        font-family: Arial, sans-serif;-->
+<!--    }-->
+
+<!--    #app {-->
+<!--        text-align: center;-->
+<!--        background-color: #fff;-->
+<!--        border-radius: 10px;-->
+<!--        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);-->
+<!--        overflow: hidden;-->
+<!--        padding: 20px;-->
+<!--        width: 400px;-->
+<!--    }-->
+
+<!--    #kafka-consumer h2 {-->
+<!--        margin-bottom: 20px;-->
+<!--    }-->
+
+<!--    #kafka-consumer table {-->
+<!--        width: 100%;-->
+<!--        border-collapse: collapse;-->
+<!--        margin-top: 20px;-->
+<!--    }-->
+
+<!--    #kafka-consumer table th, #kafka-consumer table td {-->
+<!--        border: 1px solid #ddd;-->
+<!--        padding: 8px;-->
+<!--        text-align: left;-->
+<!--    }-->
+
+<!--    #kafka-consumer table tr:nth-child(even) {-->
+<!--        background-color: #f2f2f2;-->
+<!--    }-->
+
+<!--    #kafka-consumer table th {-->
+<!--        background-color: #127bb5;-->
+<!--        color: white;-->
+<!--    }-->
+
+<!--    #kafka-consumer button {-->
+<!--        margin-top: 10px;-->
+<!--    }-->
+<!--    /* 样式化下拉列表 */-->
+<!--    #topic-select {-->
+<!--        width: 100%;-->
+<!--        padding: 5px;-->
+<!--        font-size: 16px;-->
+<!--        border: 1px solid #ccc;-->
+<!--        border-radius: 4px;-->
+<!--        background-color: #fff;-->
+<!--    }-->
+
+<!--    /* 样式化按钮 */-->
+<!--    button {-->
+<!--        margin-top: 10px;-->
+<!--        padding: 10px 20px;-->
+<!--        font-size: 16px;-->
+<!--        color: #fff;-->
+<!--        background-color: #547dba;-->
+<!--        border: none;-->
+<!--        border-radius: 4px;-->
+<!--        cursor: pointer;-->
+<!--    }-->
+
+<!--    button:hover {-->
+<!--        background-color: #4b70a9; /* 稍暗的绿色，鼠标悬停效果 */-->
+<!--    }-->
+<!--</style>-->
 
 </html>

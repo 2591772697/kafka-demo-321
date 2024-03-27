@@ -1,0 +1,30 @@
+org.apache.kafka.clients.producer
+public class KafkaProducer<K, V>
+implements org.apache.kafka.clients.producer.Producer<K, V>
+将记录发布到 Kafka 集群的 Kafka 客户端。
+生产者是 线程安全 的，跨线程共享单个生产者实例通常比拥有多个实例更快。
+下面是使用 producer 发送包含序列号作为键/值对的字符串的记录的简单示例。
+  Properties props = new Properties();   props.put("bootstrap.servers", "localhost:9092");   props.put("acks", "all");   props.put("retries", 0);   props.put("linger.ms", 1);   props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");   props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");      Producer<String, String> producer = new KafkaProducer<>(props);   for (int i = 0; i < 100; i++)       producer.send(new ProducerRecord<String, String>("my-topic", Integer.toString(i), Integer.toString(i)));      producer.close();
+创建者由一个缓冲区空间池和一个后台 I/O 线程组成，该缓冲区空间池保存尚未传输到服务器的记录，以及负责将这些记录转换为请求并将其传输到群集的后台 I/O 线程。使用后未能关闭生产器将泄漏这些资源。
+该 send() 方法是异步的。调用时，它会将记录添加到挂起记录发送的缓冲区并立即返回。这允许生产者将单个记录批处理在一起以提高效率。
+该 acks 配置控制将请求视为完整的条件。我们指定的“全部”设置将导致在记录的完全提交时阻塞，这是最慢但最持久的设置。
+如果请求失败，生产者可以自动重试，但由于我们已指定 retries 为 0，因此不会重试。启用重试也会打开重复的可能性（有关详细信息，请参阅有关 消息传递语义  的文档）。
+生产者为每个分区维护未发送记录的缓冲区。这些缓冲区的大小由 batch.size 配置指定。将其放大可能会导致更多的批处理，但需要更多的内存（因为我们通常为每个活动分区提供其中一个缓冲区）。
+默认情况下，即使缓冲区中有其他未使用的空间，也可以立即发送缓冲区。但是，如果要减少请求数，可以设置为 linger.ms 大于 0 的值。这将指示生产者在发送请求之前等待该毫秒数，以期到达更多记录以填充同一批次。这类似于 TCP 中的 Nagle 算法。例如，在上面的代码片段中，由于我们将延迟时间设置为 1 毫秒，因此可能会在单个请求中发送所有 100 条记录。但是，如果我们没有填满缓冲区，此设置会为我们的请求增加 1 毫秒的延迟，等待更多记录到达。请注意，即使处于重负载状态，在时间上到达的记录通常也会批处理在一起 linger.ms=0 ，而不管延迟配置如何，都会发生批处理;但是，将此值设置为大于 0 的值可能会导致请求更少、效率更高，而不是在最大负载下，但代价是延迟量很小。
+控制 buffer.memory 可供生产者用于缓冲的内存总量。如果记录的发送速度快于传输到服务器的速度，则此缓冲区空间将耗尽。当缓冲区空间用完时，其他发送调用将被阻止。阻止时间的阈值由触发 TimeoutException 确定 max.block.ms 。
+key.serializer和 value.serializer 指示如何将用户提供的ProducerRecord键和值对象转换为字节。您可以将包含org.apache.kafka.common.serialization.ByteArraySerializer的 or org.apache.kafka.common.serialization.StringSerializer 用于简单的字符串或字节类型。
+从 Kafka 0.11 开始，KafkaProducer 支持两种附加模式：幂等生产者和事务性生产者。幂等生产者将 Kafka 的交付语义从至少一次强化到恰好一次交付。特别是，生产者重试将不再引入重复项。事务生产者允许应用程序以原子方式将消息发送到多个分区（和主题！
+若要启用幂等性，必须将 enable.idempotence 配置设置为 true。如果设置， retries 则配置将默认为 Integer.MAX_VALUE acks ，配置将默认为 all。幂等生产者没有 API 更改，因此无需修改现有应用程序即可利用此功能。
+要利用幂等生产者，必须避免应用程序级重新发送，因为这些无法删除重复数据。因此，如果应用程序启用幂等，建议将配置保留 retries 为未设置，因为它将默认为 Integer.MAX_VALUE。此外，如果 a send(ProducerRecord) 返回错误，即使无限重试（例如，如果消息在发送之前在缓冲区中过期），则建议关闭生产者并检查上次生成的消息的内容，以确保它不会重复。最后，生产者只能保证在单个会话中发送的消息的幂等性。
+若要使用事务创建器和助理 API，必须设置 transactional.id 配置属性。如果设置了 ， transactional.id 则会自动启用幂等性以及幂等性所依赖的生产者配置。此外，应将事务中包含的主题配置为持久性。具体而言，应 replication.factor 至少 3为 ， min.insync.replicas 而 for 这些主题应设置为 2。最后，为了从端到端实现事务保证，使用者也必须配置为只读已提交的消息。
+其 transactional.id 目的是在单个生产者实例的多个会话之间启用事务恢复。它通常派生自分区的有状态应用程序中的分片标识符。因此，对于在分区应用程序中运行的每个生产者实例，它应该是唯一的。
+所有新的事务性 API 都处于阻塞状态，并在失败时引发异常。下面的示例说明了如何使用新 API。它与上面的示例类似，只是所有 100 条消息都是单个事务的一部分。
+
+  Properties props = new Properties();   props.put("bootstrap.servers", "localhost:9092");   props.put("transactional.id", "my-transactional-id");   Producer<String, String> producer = new KafkaProducer<>(props, new StringSerializer(), new StringSerializer());      producer.initTransactions();      try {       producer.beginTransaction();       for (int i = 0; i < 100; i++)           producer.send(new ProducerRecord<>("my-topic", Integer.toString(i), Integer.toString(i)));       producer.commitTransaction();   } catch (ProducerFencedException | OutOfOrderSequenceException | AuthorizationException e) {       // We can't recover from these exceptions, so our only option is to close the producer and exit.       producer.close();   } catch (KafkaException e) {       // For all other exceptions, just abort the transaction and try again.       producer.abortTransaction();   }   producer.close();
+
+正如示例中所暗示的，每个生产者只能有一个未结事务。在 和 commitTransaction() 调用之间beginTransaction()发送的所有消息都将是单个事务的一部分。指定 时transactional.id，生产者发送的所有消息都必须是事务的一部分。
+事务生产者使用异常来传达错误状态。特别是，不需要为producer.send()返回的 Future 指定回调或调用.get()：如果producer.send()任何 或事务调用在事务期间遇到不可恢复的错误，则会抛出 aKafkaException。有关检测事务发送错误的更多详细信息，send(ProducerRecord)请参阅文档。
+通过在收到 a KafkaException 时调用producer.abortTransaction()，我们可以确保任何成功的写入都被标记为中止，从而保留事务保证。
+
+此客户端可以与版本为 0.10.0 或更高版本的代理进行通信。较旧或较新的代理可能不支持某些客户端功能。例如，事务性 API 需要代理版本 0.11.0 或更高版本。在调用正在运行的代理版本中不可用的 API 时，您将收到一个 UnsupportedVersionException 。
+  Maven: org.apache.kafka:kafka-clients:3.1.0 (kafka-clients-3.1.0.jar)

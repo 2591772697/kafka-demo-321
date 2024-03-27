@@ -16,10 +16,10 @@ public class KafkaConsumer {
     public void listen(ConsumerRecord<?, ?> record) {
         log.info("consumption arrived :topic={}, offset={}, message={}", record.topic(), record.offset(), record.value());
 //        直接打印这些信息
-        System.out.println("消费到了 consumption arrived :" +
-                "topic="+record.topic()+"," +
-                " offset="+record.offset()+"," +
-                " message="+record.value());
+//        System.out.println("消费到了 consumption arrived :" +
+//                "topic="+record.topic()+"," +
+//                " offset="+record.offset()+"," +
+//                " message="+record.value());
     }
  
  

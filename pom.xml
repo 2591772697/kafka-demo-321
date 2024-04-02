@@ -8,6 +8,7 @@
     <artifactId>kafka-demo-321</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
+
     <modules>
         <module>eureka-serv</module>
         <module>kafka-producer-serv</module>

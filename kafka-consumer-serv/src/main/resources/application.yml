@@ -9,11 +9,13 @@ spring:
     bootstrap-servers: localhost:9092 # Kafka服务器地址
 
     consumer:
+#      研究能否一个组消费一个topic
       group-id: my-group # 消费者组ID
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       auto-offset-reset: earliest # 从最早的记录开始消费
     listener:
+#      研究能否一个线程消费一个topic
       concurrent-consumers: 2 # 并发消费者数量
 
 eureka:

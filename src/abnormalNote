@@ -1,0 +1,4 @@
+- When Kafka is down
+- When Application consumer is down
+- Where does Kafka store the message, how to check how many and how to clear old message
+- Check Kafka-UI disconnect issue
